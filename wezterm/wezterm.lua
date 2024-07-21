@@ -4,10 +4,22 @@ local config = wezterm.config_builder()
 local act = wezterm.action
 config.window_background_opacity = 0.98
 config.color_scheme = "tokyonight"
-
 config.font = wezterm.font("MesloLGS NF")
 config.window_decorations = "RESIZE"
+config.window_background_opacity = 0.9
+config.window_decorations = "RESIZE"
+config.window_close_confirmation = "AlwaysPrompt"
+config.scrollback_lines = 3000
+config.default_workspace = "main"
+config.macos_window_background_blur = 8
+-- Dim inactive panes
+config.inactive_pane_hsb = {
+	saturation = 0.74,
+	brightness = 0.5,
+}
 
+config.hide_tab_bar_if_only_one_tab = false
+config.enable_tab_bar = false
 -- Keys
 config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
 config.keys = {
@@ -97,19 +109,5 @@ config.key_tables = {
 		{ key = "Enter", action = "PopKeyTable" },
 	},
 }
-
-config.window_background_opacity = 0.9
-config.window_decorations = "RESIZE"
-config.window_close_confirmation = "AlwaysPrompt"
-config.scrollback_lines = 3000
-config.default_workspace = "main"
-config.macos_window_background_blur = 8
--- Dim inactive panes
-config.inactive_pane_hsb = {
-	saturation = 0.74,
-	brightness = 0.5,
-}
-
-config.hide_tab_bar_if_only_one_tab = false
 
 return config
