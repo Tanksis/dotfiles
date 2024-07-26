@@ -180,11 +180,6 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 vim.keymap.set('i', 'jk', '<ESC>', { desc = 'Exit insert mode with jk' })
 -- my custom keymaps for splitting windows
@@ -250,15 +245,38 @@ require('lazy').setup({
   --
   --  This is equivalent to:
   --    require('Comment').setup({})
-
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
+  {
+    'mrjones2014/smart-splits.nvim',
+    config = function()
+      require('smart-splits').setup {}
 
-  -- Here is a more advanced example where we pass configuration
+      -- Key mappings for resizing splits
+      vim.keymap.set('n', '<A-h>', require('smart-splits').resize_left)
+      vim.keymap.set('n', '<A-j>', require('smart-splits').resize_down)
+      vim.keymap.set('n', '<A-k>', require('smart-splits').resize_up)
+      vim.keymap.set('n', '<A-l>', require('smart-splits').resize_right)
+
+      -- Moving between splits
+      vim.keymap.set('n', '<C-h>', require('smart-splits').move_cursor_left)
+      vim.keymap.set('n', '<C-j>', require('smart-splits').move_cursor_down)
+      vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up)
+      vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right)
+      vim.keymap.set('n', '<C-\\>', require('smart-splits').move_cursor_previous)
+
+      -- Swapping buffers between windows
+      vim.keymap.set('n', '<leader><leader>h', require('smart-splits').swap_buf_left)
+      vim.keymap.set('n', '<leader><leader>j', require('smart-splits').swap_buf_down)
+      vim.keymap.set('n', '<leader><leader>k', require('smart-splits').swap_buf_up)
+      vim.keymap.set('n', '<leader><leader>l', require('smart-splits').swap_buf_right)
+    end,
+  }, -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
   --    require('gitsigns').setup({ ... })
   --
   -- See `:help gitsigns` to understand what the configuration keys do
+
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -308,7 +326,6 @@ require('lazy').setup({
       }
     end,
   },
-
   -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything
