@@ -1,4 +1,4 @@
---[[
+--[[initini
 
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
@@ -89,7 +89,6 @@ P.S. You can delete this when you're done too. It's your config now! :)
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -145,12 +144,13 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
 
+-- Hiding command line when not in command mode for more space
+
 -- Show which line your cursor is on
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
-
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 vim.opt.termguicolors = true
@@ -162,7 +162,7 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>E', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-
+vim.keymap.set('n', '<leader>cc', ':CopilotChatOpen<CR>', { desc = 'Open Copilot Chat' }) -- Open Copilot Chat
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -188,7 +188,6 @@ vim.keymap.set('n', '<leader>sv', '<C-w>v', { desc = 'Split window vertically' }
 vim.keymap.set('n', '<leader>sh', '<C-w>s', { desc = 'Split window horizontally' })
 vim.keymap.set('n', '<leader>se', '<C-w>=', { desc = 'Make split equal size' })
 vim.keymap.set('n', '<leader>sx', '<cmd>close<CR>', { desc = 'Close current split' })
-
 --custom keymaps for new tabs
 vim.keymap.set('n', '<leader>to', '<cmd>tabnew<CR>', { desc = 'Open new tab' }) -- open new tab
 vim.keymap.set('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close current tab' }) -- close current tab
@@ -247,31 +246,6 @@ require('lazy').setup({
   --    require('Comment').setup({})
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
-  {
-    'mrjones2014/smart-splits.nvim',
-    config = function()
-      require('smart-splits').setup {}
-
-      -- Key mappings for resizing splits
-      vim.keymap.set('n', '<A-h>', require('smart-splits').resize_left)
-      vim.keymap.set('n', '<A-j>', require('smart-splits').resize_down)
-      vim.keymap.set('n', '<A-k>', require('smart-splits').resize_up)
-      vim.keymap.set('n', '<A-l>', require('smart-splits').resize_right)
-
-      -- Moving between splits
-      vim.keymap.set('n', '<C-h>', require('smart-splits').move_cursor_left)
-      vim.keymap.set('n', '<C-j>', require('smart-splits').move_cursor_down)
-      vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up)
-      vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right)
-      vim.keymap.set('n', '<C-\\>', require('smart-splits').move_cursor_previous)
-
-      -- Swapping buffers between windows
-      vim.keymap.set('n', '<leader><leader>h', require('smart-splits').swap_buf_left)
-      vim.keymap.set('n', '<leader><leader>j', require('smart-splits').swap_buf_down)
-      vim.keymap.set('n', '<leader><leader>k', require('smart-splits').swap_buf_up)
-      vim.keymap.set('n', '<leader><leader>l', require('smart-splits').swap_buf_right)
-    end,
-  }, -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
   --    require('gitsigns').setup({ ... })
   --
@@ -601,7 +575,10 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
+        tsserver = {
+          cmd = { 'typescript-language-server', '--stdio' },
+        },
+
         --
 
         lua_ls = {
@@ -632,13 +609,17 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
+        'tailwindcss',
         'stylua', -- Used to format Lua code
         'gopls', -- Used for golang
         'prettier',
         'isort',
         'black',
         'pylint',
-        'eslint_d',
+        'cssls',
+        'html',
+        'jsonls',
+        'typescript-language-server',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -650,7 +631,19 @@ require('lazy').setup({
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for tsserver)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            if server_name == 'tsserver' then
+              require('lspconfig')[server_name].setup {
+                init_options = {
+                  preferences = {
+                    disableSuggestions = true,
+                  },
+                },
+                capabilities = server.capabilities,
+                settings = server.settings,
+              }
+            else
+              require('lspconfig')[server_name].setup(server)
+            end
           end,
         },
       }
@@ -819,20 +812,46 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+    'loctvl842/monokai-pro.nvim',
+    priority = 1000, -- make sure to load this before all the other start plugins.
+    opts = {
+      transparent_background = false,
+      devicons = true,
+      filter = 'pro',
+      styles = {
+        type = { italic = true },
+        comment = { italic = true },
+        keyword = { italic = true },
+        structure = { italic = true },
+        annotation = { italic = true },
+      },
+      plugins = {
+        bufferline = {
+          underline_selected = false,
+          underline_visible = false,
+          underline_fill = true,
+          bold = false,
+        },
+        indent_blankline = {
+          context_highlight = 'pro', -- default | pro
+          context_start_underline = true,
+        },
+      },
+      override = function()
+        return {
+          ['@keyword.javascript'] = { fg = '#78dce8' },
+          ['@lsp.type.parameter.javascript'] = { fg = '#ffffff' },
+          ['@variable.member.javascript'] = { fg = '#ffffff' },
+        }
+      end,
+    },
 
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
+    config = function(_, opts)
+      local monokai = require 'monokai-pro'
+      monokai.setup(opts)
+      monokai.load()
     end,
-  },
-
-  -- Highlight todo, notes, etc in comments
+  }, -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   { -- Collection of various small independent plugins/modules
@@ -855,17 +874,12 @@ require('lazy').setup({
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
       -- cursor location to LINE:COLUMN
       ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
@@ -875,7 +889,23 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'go' },
+      ensure_installed = {
+        'css',
+        'tsx',
+        'javascript',
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'go',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -915,9 +945,9 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  -- require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`

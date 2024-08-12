@@ -2,21 +2,17 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 local act = wezterm.action
-config.window_background_opacity = 0.90
-config.color_scheme = "tokyonight"
-config.font = wezterm.font("MesloLGS NF")
+
+config.window_background_opacity = 1
+config.color_scheme = "Monokai Pro (Gogh)"
+config.font = wezterm.font("Jetbrains Mono")
 config.window_decorations = "RESIZE"
-config.window_background_opacity = 0.9
 config.window_decorations = "RESIZE"
 config.window_close_confirmation = "AlwaysPrompt"
 config.scrollback_lines = 3000
 config.default_workspace = "main"
-config.macos_window_background_blur = 8
+config.macos_window_background_blur = 20
 -- Dim inactive panes
-config.inactive_pane_hsb = {
-	saturation = 0.74,
-	brightness = 0.5,
-}
 wezterm.on("spawn", function(window, pane)
 	-- Set the PATH environment variable for the local domain
 	window:perform_action(
@@ -130,7 +126,7 @@ config.keys = {
 			local panes = tab:panes_with_info()
 			if #panes == 1 then
 				pane:split({
-					direction = "Bottom",
+					direction = "Right",
 					size = 0.3,
 				})
 			elseif not panes[1].is_zoomed then
