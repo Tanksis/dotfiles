@@ -22,9 +22,15 @@ wezterm.on("spawn", function(window, pane)
 		pane
 	)
 end)
-config.hide_tab_bar_if_only_one_tab = false
-config.enable_tab_bar = false
+config.hide_tab_bar_if_only_one_tab = true
+config.enable_tab_bar = true
+config.tab_bar_at_bottom = true
+config.use_fancy_tab_bar = false
 
+config.window_padding = {
+	top = 10,
+	bottom = 0,
+}
 -- if you are *NOT* lazy-loading smart-splits.nvim (recommended)
 local function is_vim(pane)
 	-- this is set by the plugin, and unset on ExitPre in Neovim

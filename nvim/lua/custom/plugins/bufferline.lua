@@ -5,6 +5,11 @@ return {
   opts = {
     options = {
       mode = 'tabs',
+      custom_filter = function(buf_number)
+        if vim.bo[buf_number].filetype ~= 'neo-tree' then
+          return true
+        end
+      end,
 
       offsets = {
         {
