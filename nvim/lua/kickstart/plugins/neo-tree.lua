@@ -46,7 +46,7 @@ return {
       popup_border_style = 'rounded',
 
       window = {
-        width = 30,
+        width = 25,
         position = 'left',
       },
       mapping_options = {
@@ -87,6 +87,7 @@ return {
           trailing_slash = false,
           use_git_status_colors = true,
           highlight = 'NeoTreeFileName',
+          use_default_name = false,
         },
         git_status = {
           symbols = {
