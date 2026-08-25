@@ -7,8 +7,6 @@
 require 'custom.plugins.auto-session'
 require 'custom.plugins.autotag'
 require 'custom.plugins.bufferline'
-require 'custom.plugins.copilot'
-require 'custom.plugins.copilot-chat'
 require 'custom.plugins.go'
 require 'custom.plugins.hlargs'
 require 'custom.plugins.lazygit'
