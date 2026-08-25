@@ -263,6 +263,9 @@ do
 
   -- [[ Colorscheme ]]
   vim.pack.add { { src = 'https://github.com/catppuccin/nvim', name = 'catppuccin' } }
+  require('catppuccin').setup {
+    auto_integrations = true,
+  }
 
   vim.cmd.colorscheme 'catppuccin-mocha'
   -- vim.pack.add { gh 'loctvl842/monokai-pro.nvim' }
@@ -514,7 +517,6 @@ do
     gh 'mason-org/mason-lspconfig.nvim',
     gh 'WhoIsSethDaniel/mason-tool-installer.nvim',
   }
-
 
   require('mason').setup()
 

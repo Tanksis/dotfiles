@@ -2,19 +2,71 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 local act = wezterm.action
+
 config.default_prog = { "pwsh.exe" }
+
 config.window_background_opacity = 1
 config.color_scheme = "Catppuccin Mocha (Gogh)"
 config.font = wezterm.font("JetBrains Mono")
+
 config.window_decorations = "RESIZE"
 config.window_decorations = "RESIZE"
 config.window_close_confirmation = "AlwaysPrompt"
 config.scrollback_lines = 3000
 config.default_workspace = "main"
+
 config.macos_window_background_blur = 20
 config.max_fps = 250
 config.animation_fps = 250
 config.front_end = "OpenGL"
+
+config.hide_tab_bar_if_only_one_tab = false
+config.enable_tab_bar = true
+config.use_fancy_tab_bar = false
+config.tab_max_width = 18
+
+-- catppuccin mocha
+config.colors = {
+	tab_bar = {
+		background = "#181825",
+
+		active_tab = {
+			bg_color = "#313244",
+			fg_color = "#cba6f7",
+			intensity = "Bold",
+			underline = "None",
+			italic = false,
+			strikethrough = false,
+		},
+
+		inactive_tab = {
+			bg_color = "#1e1e2e",
+			fg_color = "#6c7086",
+		},
+
+		inactive_tab_hover = {
+			bg_color = "#45475a",
+			fg_color = "#cdd6f4",
+			italic = true,
+		},
+
+		new_tab = {
+			bg_color = "#181825",
+			fg_color = "#6c7086",
+		},
+
+		new_tab_hover = {
+			bg_color = "#45475a",
+			fg_color = "#cdd6f4",
+			italic = false,
+		},
+	},
+}
+config.window_padding = {
+	top = 10,
+	bottom = 0,
+}
+
 -- Dim inactive panes
 wezterm.on("spawn", function(window, pane)
 	-- Set the PATH environment variable for the local domain
@@ -25,14 +77,6 @@ wezterm.on("spawn", function(window, pane)
 		pane
 	)
 end)
-config.hide_tab_bar_if_only_one_tab = false
-config.enable_tab_bar = true
-config.use_fancy_tab_bar = false
-
-config.window_padding = {
-	top = 10,
-	bottom = 0,
-}
 -- if you are *NOT* lazy-loading smart-splits.nvim (recommended)
 local function is_vim(pane)
 	-- this is set by the plugin, and unset on ExitPre in Neovim
