@@ -1,16 +1,12 @@
 -- autopairs
 -- https://github.com/windwp/nvim-autopairs
+--
+-- NOTE: nvim-autopairs has no official blink.cmp integration (the old
+-- nvim-cmp `confirm_done` hook doesn't apply). blink.cmp's own
+-- `completion.accept.auto_brackets` (see init.lua Section 8) now covers
+-- "insert () after accepting a function completion" instead.
 
-return {
-  'windwp/nvim-autopairs',
-  event = 'InsertEnter',
-  -- Optional dependency
-  dependencies = { 'hrsh7th/nvim-cmp' },
-  config = function()
-    require('nvim-autopairs').setup {}
-    -- If you want to automatically add `(` after selecting a function or method
-    local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
-    local cmp = require 'cmp'
-    cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
-  end,
-}
+local function gh(repo) return 'https://github.com/' .. repo end
+
+vim.pack.add { gh 'windwp/nvim-autopairs' }
+require('nvim-autopairs').setup {}

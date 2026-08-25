@@ -1,16 +1,16 @@
-return {
-  {
-    'CopilotC-Nvim/CopilotChat.nvim',
-    branch = 'canary',
-    dependencies = {
-      { 'zbirenbaum/copilot.lua' }, -- or github/copilot.vim
-      { 'nvim-lua/plenary.nvim' }, -- for curl, log wrapper
-    },
-    opts = {
-      debug = true, -- Enable debugging
-      -- See Configuration section for rest
-      mappings = {},
-    },
-    -- See Commands section for default commands if you want to lazy load on them
-  },
+local function gh(repo) return 'https://github.com/' .. repo end
+
+-- NOTE: dependency is plenary.nvim only — CopilotChat.nvim's own auth talks
+-- to Copilot directly and doesn't need copilot.lua or copilot.vim as a
+-- dependency (github/copilot.vim, installed separately in copilot.lua, is
+-- what actually provides inline completions). Default branch is now `main`
+-- (the old `canary` branch was merged into it).
+vim.pack.add {
+  gh 'nvim-lua/plenary.nvim',
+  gh 'CopilotC-Nvim/CopilotChat.nvim',
+}
+
+require('CopilotChat').setup {
+  debug = true,
+  mappings = {},
 }

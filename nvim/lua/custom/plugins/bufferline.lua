@@ -1,24 +1,21 @@
-return {
-  'akinsho/bufferline.nvim',
-  dependencies = { 'nvim-tree/nvim-web-devicons' },
-  version = '*',
-  opts = {
-    options = {
-      mode = 'tabs',
-      custom_filter = function(buf_number)
-        if vim.bo[buf_number].filetype ~= 'neo-tree' then
-          return true
-        end
-      end,
+local function gh(repo) return 'https://github.com/' .. repo end
 
-      offsets = {
-        {
-          filetype = 'neo-tree',
-          text = 'File Explorer',
-          highlight = 'Directory',
-          separator = true, -- use a "true" to enable the default, or set your own character
-          text_align = 'center', -- can be "center", "left", or "right":w
-        },
+vim.pack.add { { src = gh 'akinsho/bufferline.nvim', version = vim.version.range '*' } }
+
+require('bufferline').setup {
+  options = {
+    mode = 'tabs',
+    custom_filter = function(buf_number)
+      if vim.bo[buf_number].filetype ~= 'neo-tree' then return true end
+    end,
+
+    offsets = {
+      {
+        filetype = 'neo-tree',
+        text = 'File Explorer',
+        highlight = 'Directory',
+        separator = true,
+        text_align = 'center',
       },
     },
   },

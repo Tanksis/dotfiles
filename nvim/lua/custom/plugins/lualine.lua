@@ -1,12 +1,9 @@
-return {
-  'nvim-lualine/lualine.nvim',
-  dependencies = { 'nvim-tree/nvim-web-devicons' },
+local function gh(repo) return 'https://github.com/' .. repo end
 
-  config = function()
-    require('lualine').setup {
-      options = {
-        theme = 'monokai-pro',
-      },
-    }
-  end,
+vim.pack.add { gh 'nvim-lualine/lualine.nvim' }
+
+require('lualine').setup {
+  options = {
+    theme = 'monokai-pro',
+  },
 }

@@ -1,14 +1,12 @@
-return {
-  'mrjones2014/smart-splits.nvim',
+local function gh(repo) return 'https://github.com/' .. repo end
 
-  config = function()
-    require('smart-splits').setup {
-      multiplexer_integration = 'Wezterm',
-    }
+vim.pack.add { gh 'mrjones2014/smart-splits.nvim' }
 
-    vim.keymap.set('n', '<C-h>', require('smart-splits').move_cursor_left)
-    vim.keymap.set('n', '<C-j>', require('smart-splits').move_cursor_down)
-    vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up)
-    vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right)
-  end,
+require('smart-splits').setup {
+  multiplexer_integration = 'Wezterm',
 }
+
+vim.keymap.set('n', '<C-h>', require('smart-splits').move_cursor_left)
+vim.keymap.set('n', '<C-j>', require('smart-splits').move_cursor_down)
+vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up)
+vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right)
