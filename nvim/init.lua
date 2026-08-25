@@ -255,44 +255,49 @@ do
       { '<leader>w', group = '[W]orkspace / session' },
       { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       { '<leader>e', group = 'Filetree Explorer' },
-      { 'gr', group = 'LSP Actions', mode = { 'n' } },
+      { '<leader>c', group = '[C]ode' },
+      { '<leader>d', group = '[D]ocument' },
+      { '<leader>r', group = '[R]ename' },
     },
   }
 
   -- [[ Colorscheme ]]
-  vim.pack.add { gh 'loctvl842/monokai-pro.nvim' }
-  require('monokai-pro').setup {
-    transparent_background = false,
-    devicons = true,
-    filter = 'pro',
-    styles = {
-      type = { italic = true },
-      comment = { italic = true },
-      keyword = { italic = true },
-      structure = { italic = true },
-      annotation = { italic = true },
-    },
-    plugins = {
-      bufferline = {
-        underline_selected = false,
-        underline_visible = false,
-        underline_fill = true,
-        bold = false,
-      },
-      indent_blankline = {
-        context_highlight = 'pro',
-        context_start_underline = true,
-      },
-    },
-    override = function()
-      return {
-        ['@keyword.javascript'] = { fg = '#78dce8' },
-        ['@lsp.type.parameter.javascript'] = { fg = '#ffffff' },
-        ['@variable.member.javascript'] = { fg = '#ffffff' },
-      }
-    end,
-  }
-  require('monokai-pro').load()
+  vim.pack.add { { src = 'https://github.com/catppuccin/nvim', name = 'catppuccin' } }
+
+  vim.cmd.colorscheme 'catppuccin-mocha'
+  -- vim.pack.add { gh 'loctvl842/monokai-pro.nvim' }
+  -- require('monokai-pro').setup {
+  --   transparent_background = false,
+  --   devicons = true,
+  --   filter = 'pro',
+  --   styles = {
+  --     type = { italic = true },
+  --     comment = { italic = true },
+  --     keyword = { italic = true },
+  --     structure = { italic = true },
+  --     annotation = { italic = true },
+  --   },
+  --   plugins = {
+  --     bufferline = {
+  --       underline_selected = false,
+  --       underline_visible = false,
+  --       underline_fill = true,
+  --       bold = false,
+  --     },
+  --     indent_blankline = {
+  --       context_highlight = 'pro',
+  --       context_start_underline = true,
+  --     },
+  --   },
+  --   override = function()
+  --     return {
+  --       ['@keyword.javascript'] = { fg = '#78dce8' },
+  --       ['@lsp.type.parameter.javascript'] = { fg = '#ffffff' },
+  --       ['@variable.member.javascript'] = { fg = '#ffffff' },
+  --     }
+  --   end,
+  -- }
+  -- require('monokai-pro').load()
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -361,12 +366,12 @@ do
     group = vim.api.nvim_create_augroup('telescope-lsp-attach', { clear = true }),
     callback = function(event)
       local buf = event.buf
-      vim.keymap.set('n', 'grr', builtin.lsp_references, { buffer = buf, desc = '[G]oto [R]eferences' })
-      vim.keymap.set('n', 'gri', builtin.lsp_implementations, { buffer = buf, desc = '[G]oto [I]mplementation' })
-      vim.keymap.set('n', 'grd', builtin.lsp_definitions, { buffer = buf, desc = '[G]oto [D]efinition' })
-      vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = buf, desc = 'Open Document Symbols' })
-      vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = buf, desc = 'Open Workspace Symbols' })
-      vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = buf, desc = '[G]oto [T]ype Definition' })
+      vim.keymap.set('n', 'gd', builtin.lsp_definitions, { buffer = buf, desc = '[G]oto [D]efinition' })
+      vim.keymap.set('n', 'gr', builtin.lsp_references, { buffer = buf, desc = '[G]oto [R]eferences' })
+      vim.keymap.set('n', 'gI', builtin.lsp_implementations, { buffer = buf, desc = '[G]oto [I]mplementation' })
+      vim.keymap.set('n', '<leader>D', builtin.lsp_type_definitions, { buffer = buf, desc = 'Type [D]efinition' })
+      vim.keymap.set('n', '<leader>ds', builtin.lsp_document_symbols, { buffer = buf, desc = '[D]ocument [S]ymbols' })
+      vim.keymap.set('n', '<leader>wS', builtin.lsp_dynamic_workspace_symbols, { buffer = buf, desc = '[W]orkspace [S]ymbols' })
     end,
   })
 
@@ -390,6 +395,14 @@ do
   vim.pack.add { gh 'j-hui/fidget.nvim' }
   require('fidget').setup {}
 
+  -- Default config applied to every server: keep inlay hints off unless
+  -- toggled on with <leader>th (see the LspAttach autocmd below).
+  vim.lsp.config('*', {
+    on_attach = function(_, bufnr)
+      vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+    end,
+  })
+
   vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
     callback = function(event)
@@ -398,9 +411,10 @@ do
         vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
       end
 
-      map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
-      map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
-      map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+      map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+      map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+      map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+      map('K', vim.lsp.buf.hover, 'Hover Documentation')
 
       -- Highlight references of the word under the cursor while it rests there
       local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -445,6 +459,13 @@ do
     cssls = {},
     html = {},
     jsonls = {},
+    pyright = {},
+    ruff = {
+      on_attach = function(client)
+        -- pyright already provides hover; avoid duplicate hover popups from ruff
+        client.server_capabilities.hoverProvider = false
+      end,
+    },
     ts_ls = {
       init_options = {
         preferences = {
@@ -493,6 +514,7 @@ do
     gh 'mason-org/mason-lspconfig.nvim',
     gh 'WhoIsSethDaniel/mason-tool-installer.nvim',
   }
+
 
   require('mason').setup()
 
