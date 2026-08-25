@@ -12,7 +12,9 @@ config.window_close_confirmation = "AlwaysPrompt"
 config.scrollback_lines = 3000
 config.default_workspace = "main"
 config.macos_window_background_blur = 20
-config.max_fps = 240
+config.max_fps = 250
+config.animation_fps = 250
+config.front_end = "OpenGL"
 -- Dim inactive panes
 wezterm.on("spawn", function(window, pane)
 	-- Set the PATH environment variable for the local domain

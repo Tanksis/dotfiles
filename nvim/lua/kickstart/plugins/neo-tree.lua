@@ -5,7 +5,9 @@
 -- MiniIcons.mock_nvim_web_devicons() (see init.lua Section 4) satisfies
 -- neo-tree's `require('nvim-web-devicons')` calls.
 
-local function gh(repo) return 'https://github.com/' .. repo end
+local function gh(repo)
+  return 'https://github.com/' .. repo
+end
 
 vim.pack.add {
   gh 'nvim-lua/plenary.nvim',
@@ -35,7 +37,7 @@ require('neo-tree').setup {
   popup_border_style = 'rounded',
 
   window = {
-    width = 25,
+    width = 30,
     position = 'left',
   },
   mapping_options = {
@@ -60,13 +62,25 @@ require('neo-tree').setup {
       expander_highlight = 'NeoTreeExpander',
     },
     icon = {
-      folder_closed = '',
-      folder_open = '',
+      folder_closed = '',
+      folder_open = '',
       folder_empty = '󰜌',
+      provider = function(icon, node, state) -- default icon provider utilizes nvim-web-devicons if available
+        if node.type == 'file' or node.type == 'terminal' then
+          local success, web_devicons = pcall(require, 'nvim-web-devicons')
+          local name = node.type == 'terminal' and 'terminal' or node.name
+          if success then
+            local devicon, hl = web_devicons.get_icon(name)
+            icon.text = devicon or icon.text
+            icon.highlight = hl or icon.highlight
+          end
+        end
+      end,
       -- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
       -- then these will never be used.
       default = '*',
       highlight = 'NeoTreeFileIcon',
+      use_filtered_colors = true, -- Whether to use a different highlight when the file is filtered (hidden, dotfile, etc.).
     },
     modified = {
       symbol = '[+]',
@@ -81,16 +95,16 @@ require('neo-tree').setup {
     git_status = {
       symbols = {
         -- Change type
-        added = '', -- or "✚", but this is redundant info if you use git_status_colors on the name
-        modified = '', -- or "", but this is redundant info if you use git_status_colors on the name
+        added = '', -- or "✚"
+        modified = '', -- or ""
         deleted = '✖', -- this can only be used in the git_status source
         renamed = '󰁕', -- this can only be used in the git_status source
         -- Status type
-        untracked = '',
-        ignored = '',
+        untracked = '',
+        ignored = '',
         unstaged = '󰄱',
-        staged = '',
-        conflict = '',
+        staged = '',
+        conflict = '',
       },
     },
 

@@ -6,7 +6,9 @@
 -- barbecue.nvim (winbar breadcrumbs) is archived with no snacks equivalent
 -- and was dropped without a replacement.
 
-local function gh(repo) return 'https://github.com/' .. repo end
+local function gh(repo)
+  return 'https://github.com/' .. repo
+end
 
 vim.pack.add { gh 'folke/snacks.nvim' }
 
@@ -28,11 +30,32 @@ require('snacks').setup {
       keys = {
         { icon = '', key = 'e', desc = 'New File', action = ':enew' },
         { icon = '', key = 't', desc = 'Toggle file explorer', action = ':silent! Neotree filesystem reveal left toggle' },
-        { icon = '', key = 'f', desc = 'Find File', action = function() require('telescope.builtin').find_files() end },
-        { icon = '', key = 'g', desc = 'Find Word', action = function() require('telescope.builtin').live_grep() end },
+        {
+          icon = '',
+          key = 'f',
+          desc = 'Find File',
+          action = function()
+            require('telescope.builtin').find_files()
+          end,
+        },
+        {
+          icon = '',
+          key = 'g',
+          desc = 'Find Word',
+          action = function()
+            require('telescope.builtin').live_grep()
+          end,
+        },
         { icon = '', key = 'r', desc = 'Restore Session For Current Directory', action = ':SessionRestore' },
         { icon = '', key = 'q', desc = 'Quit NVIM', action = ':qa' },
       },
+    },
+    -- Default sections include `startup`, which shows a "plugins loaded in
+    -- Xms" footer via `require('lazy.stats')`. We use vim.pack, not
+    -- lazy.nvim, so that section errors on every dashboard render/resize.
+    sections = {
+      { section = 'header' },
+      { section = 'keys', gap = 1, padding = 1 },
     },
   },
 }
