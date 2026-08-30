@@ -3,7 +3,7 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 local act = wezterm.action
 
-config.default_prog = { "pwsh.exe" }
+config.default_prog = { "powershell.exe", "-NoLogo" }
 
 config.window_background_opacity = 1
 config.color_scheme = "Catppuccin Mocha (Gogh)"
@@ -184,6 +184,9 @@ config.keys = {
 				pane:split({
 					direction = "Right",
 					size = 0.3,
+					-- inherit the active pane's domain + working directory so the
+					-- new pane spawns the same shell/context as the current one
+					domain = "CurrentPaneDomain",
 				})
 			elseif not panes[1].is_zoomed then
 				panes[1].pane:activate()

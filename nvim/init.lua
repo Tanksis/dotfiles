@@ -48,6 +48,16 @@ do
   vim.o.list = true
   vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
+  -- Indentation baseline. guess-indent.nvim adapts these per-buffer when it can
+  -- detect a definite style from an existing file, but it does nothing on new
+  -- buffers or when detection is ambiguous, so we need sane defaults underneath.
+  -- 2-space + expandtab matches Prettier and stylua (see SECTION 7); per-filetype
+  -- overrides for black / gofmt live in SECTION 2.
+  vim.o.expandtab = true
+  vim.o.tabstop = 2
+  vim.o.softtabstop = 2
+  vim.o.shiftwidth = 2
+
   vim.o.inccommand = 'split'
   vim.o.cursorline = true
   vim.o.scrolloff = 10
@@ -114,6 +124,31 @@ do
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function()
       vim.hl.on_yank()
+    end,
+  })
+
+  -- Per-filetype indent overrides for formatters that aren't 2-space-soft.
+  -- These run on FileType (before guess-indent's BufReadPost), so guess-indent
+  -- still wins for existing files where it detects a concrete style.
+  local indent_group = vim.api.nvim_create_augroup('kickstart-indent', { clear = true })
+  vim.api.nvim_create_autocmd('FileType', {
+    desc = 'Python: 4-space indent (black)',
+    group = indent_group,
+    pattern = 'python',
+    callback = function()
+      vim.bo.tabstop = 4
+      vim.bo.softtabstop = 4
+      vim.bo.shiftwidth = 4
+    end,
+  })
+  vim.api.nvim_create_autocmd('FileType', {
+    desc = 'Go: real tabs (gofmt)',
+    group = indent_group,
+    pattern = { 'go', 'gomod', 'gowork', 'gotmpl' },
+    callback = function()
+      vim.bo.expandtab = false
+      vim.bo.tabstop = 4
+      vim.bo.shiftwidth = 4
     end,
   })
 end
