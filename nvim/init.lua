@@ -3,8 +3,7 @@
 -- manager, native LSP config (`vim.lsp.config`/`vim.lsp.enable`), blink.cmp,
 -- and the new nvim-treesitter `main` branch API.
 --
--- Requires Neovim >= 0.12 (for `vim.pack`).
-
+--
 -- ============================================================
 -- SECTION 1: OPTIONS
 -- ============================================================
@@ -101,8 +100,8 @@ do
   vim.keymap.set('i', 'jk', '<ESC>', { desc = 'Exit insert mode with jk' })
 
   -- Splits
-  vim.keymap.set('n', '<leader>sv', '<C-w>v', { desc = 'Split window vertically' })
-  vim.keymap.set('n', '<leader>sh', '<C-w>s', { desc = 'Split window horizontally' })
+  vim.keymap.set('n', '<leader>sv', '<C-w>v', { desc = '[S] plit window [V]ertically' })
+  vim.keymap.set('n', '<leader>sh', '<C-w>s', { desc = '[S] plit window [H]orizontally' })
   vim.keymap.set('n', '<leader>se', '<C-w>=', { desc = 'Make split equal size' })
   vim.keymap.set('n', '<leader>sx', '<cmd>close<CR>', { desc = 'Close current split' })
 
@@ -387,7 +386,7 @@ do
   pcall(require('telescope').load_extension, 'ui-select')
 
   local builtin = require 'telescope.builtin'
-  vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+  -- vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
   vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
   vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
   vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })

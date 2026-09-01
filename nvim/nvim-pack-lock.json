@@ -31,6 +31,10 @@
       "rev": "2390c6e45c4789072c293ac69de051d169668b29",
       "src": "https://github.com/coder/claudecode.nvim"
     },
+    "code-preview.nvim": {
+      "rev": "998deddb57135c4c0634682ca0dd33054bcced59",
+      "src": "https://github.com/Cannon07/code-preview.nvim"
+    },
     "conform.nvim": {
       "rev": "016802de402556da54c36bd7359b441266b01cdd",
       "src": "https://github.com/stevearc/conform.nvim"
